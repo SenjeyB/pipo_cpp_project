@@ -1,0 +1,21 @@
+name: Main Build
+
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Setup C++
+        uses: actions/setup-cpp@v1
+        with:
+          compiler: gcc
+          cpp-version: '17'
+      - name: Build
+        run: echo "Hello CPP"
