@@ -13,9 +13,12 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
       - name: Setup C++
-        uses: actions/setup-cpp@v1
+        uses: aminya/setup-cpp@v1
         with:
-          compiler: gcc
-          cpp-version: '17'
+          compiler: llvm
+          vcvarsall: true
+          cmake: true
+          ninja: true
+          vcpkg: true
       - name: Build
         run: echo "Hello CPP"
