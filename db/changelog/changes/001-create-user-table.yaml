@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-user-table
+      author: system
+      changes:
+        - sqlFile:
+            path: db/changelog/changes/001-create-user-table.sql

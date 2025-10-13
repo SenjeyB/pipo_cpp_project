@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: pipo_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  liquibase:
+    image: liquibase/liquibase:latest
+    depends_on:
+      - postgres
+    volumes:
+      - ./db:/liquibase/changelog
+      - ./liquibase.properties:/liquibase/liquibase.properties
+    command: --defaults-file=/liquibase/liquibase.properties update
+
+volumes:
+  postgres_data:
