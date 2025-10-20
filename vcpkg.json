@@ -1,0 +1,11 @@
+{
+  "name": "pipo-hse",
+  "version": "0.0.1",
+  "dependencies": [
+    "boost-asio",
+    "boost-beast",
+    "boost-system",
+    "nlohmann-json",
+    "libpqxx"
+  ]
+}

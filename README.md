@@ -1,51 +1,156 @@
-# pipo_cpp_project
-HSE PIPO course project repo 
+# Pipo - When2Meet Clone
 
-## Project Structure
+REST API сервис для планирования встреч (аналог When2Meet).
 
-- `src/` - Source files
-  - `main.cpp` - Main application entry point
-- `include/` - Header files
-- `tests/` - Test files using Google Test
-  - `test_main.cpp` - Test suite
+## Требования
 
-## Build Instructions
+- CMake 3.14+
+- C++20 компилятор
+- vcpkg (для управления зависимостями)
+- Docker и Docker Compose (для БД)
 
-### Requirements
-- CMake 3.14 or higher
-- C++20 compatible compiler (GCC, Clang, MSVC)
+## Быстрый старт
 
-### Building the Project
+### 1. Установка vcpkg (если еще не установлен)
 
-```bash
-# Create build directory
-mkdir build
-cd build
-
-# Configure with CMake
-cmake ..
-
-# Build
-cmake --build .
+```powershell
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat
+$env:VCPKG_ROOT = (Get-Location).Path
 ```
 
-### Running the Application
+### 2. Запуск базы данных
 
-```bash
-# From build directory
-./pipo-hse           # Linux/macOS
-.\pipo-hse.exe       # Windows
+```powershell
+docker-compose up -d
 ```
 
-### Running Tests
+Это запустит PostgreSQL и применит миграции Liquibase.
 
-```bash
-# From build directory
-ctest --output-on-failure
+### 3. Сборка проекта
 
-# Or run test executable directly
-./tests_run          # Linux/macOS
-.\tests_run.exe      # Windows
+**Автоматическая сборка:**
+```powershell
+.\build.ps1
 ```
+
+**Ручная сборка:**
+```powershell
+vcpkg install
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake
+cmake --build build
+```
+
+### 4. Запуск сервера
+
+**Автоматический запуск:**
+```powershell
+.\start.ps1
+```
+
+**Ручной запуск:**
+```powershell
+.\build\Debug\pipo-hse.exe
+```
+
+Сервер запустится на `http://localhost:8080`
+
+### 5. Тестирование API
+
+```powershell
+.\test-api.ps1
+```
+
+## API Endpoints
+
+### Пользователи
+
+#### Создать пользователя
+```http
+POST /api/users
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "password123",
+  "first_name": "John",
+  "last_name": "Doe"
+}
+```
+
+#### Получить всех пользователей
+```http
+GET /api/users
+```
+
+#### Получить пользователя по ID
+```http
+GET /api/users/{uuid}
+```
+
+## Структура проекта
+
+```
+.
+├── db/
+│   └── changelog/
+│       ├── db.changelog-master.yaml
+│       └── changes/
+│           ├── 001-create-user-table.yaml
+│           └── 001-create-user-table.sql
+├── include/
+│   ├── server.h
+│   ├── db/
+│   │   └── database.h
+│   └── handlers/
+│       └── user_handler.h
+├── src/
+│   ├── main.cpp
+│   ├── server.cpp
+│   ├── db/
+│   │   └── database.cpp
+│   └── handlers/
+│       └── user_handler.cpp
+├── tests/
+├── CMakeLists.txt
+├── docker-compose.yml
+├── vcpkg.json
+├── build.ps1
+├── start.ps1
+└── test-api.ps1
+```
+
+## Разработка
+
+### Запуск тестов
+
+```powershell
+.\build\Debug\tests_run.exe
+```
+
+### Остановка БД
+
+```powershell
+docker-compose down
+```
+
+### Просмотр логов БД
+
+```powershell
+docker-compose logs -f postgres
+```
+
+## Технологии
+
+- **C++20** - язык программирования
+- **Boost.Beast** - HTTP сервер
+- **Boost.Asio** - асинхронный I/O
+- **nlohmann/json** - работа с JSON
+- **libpqxx** - PostgreSQL клиент
+- **PostgreSQL** - база данных
+- **Liquibase** - миграции БД
+- **Docker** - контейнеризация
 
 

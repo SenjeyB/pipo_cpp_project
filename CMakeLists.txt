@@ -16,7 +16,26 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(include)
 
-add_executable(pipo-hse src/main.cpp)
+find_package(Boost 1.70 REQUIRED COMPONENTS system)
+find_package(nlohmann_json REQUIRED)
+find_package(libpqxx REQUIRED)
+
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+endif()
+
+add_executable(pipo-hse 
+    src/main.cpp
+    src/server.cpp
+    src/handlers/user_handler.cpp
+    src/db/database.cpp
+)
+
+target_link_libraries(pipo-hse 
+    ${Boost_LIBRARIES}
+    nlohmann_json::nlohmann_json
+    pqxx
+)
 
 enable_testing()
 
